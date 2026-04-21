@@ -33,7 +33,7 @@ with a focus on **object-oriented programming, clean architecture, and modular d
 ## Installation
 
 ```bash
-git clone https://github.com/your-username/TetrisPy.git
+git clone https://github.com/dig1tall/TetrisPy.git
 cd TetrisPy
 pip install -r requirements.txt
 ```
@@ -85,6 +85,11 @@ Tetris_Realse/
 ├── scores/
 │   ├── champion.dat
 │   └── scores.csv
+│
+├── screenshots/
+│   ├── game_over.png
+│   ├── gameplay.png
+│   └── menu.png
 ```
 
 ---
