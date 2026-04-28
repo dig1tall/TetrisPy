@@ -5,6 +5,31 @@ from game.config import *
 from game.utils import get_shape_color
 
 
+class VolumeSlider:
+    def __init__(self, x, y, w, h, initial_val=0.5):
+        self.rect = pygame.Rect(x, y, w, h)
+        self.handle_rect = pygame.Rect(x + (w * initial_val) - 5, y - 5, 10, h + 10)
+        self.volume = initial_val
+        self.dragging = False
+
+    def draw(self, screen):
+        pygame.draw.rect(screen, (200, 200, 200), self.rect)
+        pygame.draw.rect(screen, (255, 255, 255), self.handle_rect)
+
+    def handle_event(self, event):
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if self.handle_rect.collidepoint(event.pos):
+                self.dragging = True
+        elif event.type == pygame.MOUSEBUTTONUP:
+            self.dragging = False
+        elif event.type == pygame.MOUSEMOTION:
+            if self.dragging:
+                new_x = max(self.rect.left, min(event.pos[0], self.rect.right))
+                self.handle_rect.centerx = new_x
+                self.volume = (new_x - self.rect.x) / self.rect.width
+                pygame.mixer.music.set_volume(self.volume)
+
+
 class Renderer:
     def __init__(self, screen):
         self.screen = screen
@@ -194,3 +219,37 @@ class Renderer:
         for i, (txt, col) in enumerate(opts):
             surf = self.font_sm.render(txt, True, col)
             self.screen.blit(surf, (cx - surf.get_width() // 2, cy + 60 + i * 40))
+
+    def draw_volume_control(self, slider):
+        mid_y = slider.rect.y + slider.rect.height // 2
+        icon_x = slider.rect.x - 32
+        icon_col = (130, 130, 130)
+
+        spk_w, spk_h = 6, 6
+        pygame.draw.rect(self.screen, icon_col, (icon_x, mid_y - spk_h // 2, spk_w, spk_h))
+
+        bell_w, bell_h = 7, 12
+        points = [
+            (icon_x + spk_w, mid_y - spk_h // 2),
+            (icon_x + spk_w + bell_w, mid_y - bell_h // 2),
+            (icon_x + spk_w + bell_w, mid_y + bell_h // 2),
+            (icon_x + spk_w, mid_y + spk_h // 2)
+        ]
+        pygame.draw.polygon(self.screen, icon_col, points)
+
+        if slider.volume == 0:
+            center_icon_x = icon_x + (spk_w + bell_w) // 2
+            cs = 5
+            pygame.draw.line(self.screen, (230, 41, 55), (center_icon_x - cs, mid_y - cs),
+                             (center_icon_x + cs, mid_y + cs), 2)
+            pygame.draw.line(self.screen, (230, 41, 55), (center_icon_x - cs, mid_y + cs),
+                             (center_icon_x + cs, mid_y - cs), 2)
+
+        pygame.draw.rect(self.screen, (40, 40, 45), slider.rect, border_radius=4)
+        fill_w = max(0, (slider.handle_rect.centerx - slider.rect.x) - 2)
+        if fill_w > 0:
+            active_rect = pygame.Rect(slider.rect.x, slider.rect.y, fill_w, slider.rect.height)
+            pygame.draw.rect(self.screen, (255, 203, 0), active_rect, border_radius=4)
+
+        pygame.draw.circle(self.screen, (245, 245, 245),
+                           (slider.handle_rect.centerx, mid_y), 8)

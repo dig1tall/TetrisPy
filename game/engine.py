@@ -4,7 +4,7 @@ import random
 from pathlib import Path
 from game.board import Board
 from game.piece import Piece
-from game.renderer import Renderer
+from game.renderer import Renderer, VolumeSlider
 from game.score_manager import ScoreManager
 from game.config import SCREEN_WIDTH, SCREEN_HEIGHT
 
@@ -38,6 +38,8 @@ class TetrisPy:
         self.last_fall = time.perf_counter()
         self.load_sounds()
 
+        self.slider = VolumeSlider(SCREEN_WIDTH - 150, SCREEN_HEIGHT - 30, 140, 8)
+
     def load_sounds(self):
         pygame.mixer.init()
         path = Path(__file__).resolve().parent.parent / "assets" / "sounds"
@@ -66,8 +68,10 @@ class TetrisPy:
             pass
 
     def play_snd(self, name):
-        if self.sounds.get(name):
-            self.sounds[name].play()
+        sound = self.sounds.get(name)
+        if sound:
+            sound.set_volume(self.slider.volume)
+            sound.play()
 
     def pick_new_piece(self) -> Piece:
         """Selects the next figure"""
@@ -82,7 +86,7 @@ class TetrisPy:
             return 0
         offset = 0
         while not self.board.check_collision(
-            [[c[0] + offset + 1, c[1]] for c in self.current_piece.cells]
+                [[c[0] + offset + 1, c[1]] for c in self.current_piece.cells]
         ):
             offset += 1
         return offset
@@ -117,6 +121,8 @@ class TetrisPy:
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 self.running = False
 
+            self.slider.handle_event(event)
+
             if self.gameState == 0:
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_RETURN and self.player_name:
@@ -140,13 +146,13 @@ class TetrisPy:
                 elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_a:
                         if not self.board.check_collision(
-                            [[c[0], c[1] - 1] for c in self.current_piece.cells]
+                                [[c[0], c[1] - 1] for c in self.current_piece.cells]
                         ):
                             self.current_piece.move(0, -1)
                             self.play_snd("Move")
                     elif event.key == pygame.K_d:
                         if not self.board.check_collision(
-                            [[c[0], c[1] + 1] for c in self.current_piece.cells]
+                                [[c[0], c[1] + 1] for c in self.current_piece.cells]
                         ):
                             self.current_piece.move(0, 1)
                             self.play_snd("Move")
@@ -203,7 +209,7 @@ class TetrisPy:
                 )
                 if time.perf_counter() - self.last_fall >= delay:
                     if not self.board.check_collision(
-                        [[c[0] + 1, c[1]] for c in self.current_piece.cells]
+                            [[c[0] + 1, c[1]] for c in self.current_piece.cells]
                     ):
                         self.current_piece.move(1, 0)
                         if keys[pygame.K_s] or keys[pygame.K_DOWN]:
@@ -214,6 +220,7 @@ class TetrisPy:
                     self.last_fall = time.perf_counter()
 
             self.renderer.draw_background()
+            self.renderer.draw_volume_control(self.slider)
             if self.gameState == 0:
                 self.renderer.draw_menu(self.player_name, frames)
             else:

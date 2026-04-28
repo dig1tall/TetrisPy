@@ -9,17 +9,15 @@ with a focus on **object-oriented programming, clean architecture, and modular d
 
 ## Features
 
-* Classic Tetris gameplay
-* Smooth controls and animations
-* Ghost piece (landing preview)
-* Hold piece system
-* Sound effects & background music
+* Classic Tetris gameplay with smooth controls and animations
+* **Ghost piece** (landing preview) for better precision
+* **Hold piece system** (C key)
+* **Dynamic Audio Control:** Custom volume slider for both background music and SFX
 * 7-bag randomizer (fair piece generation)
-* Local leaderboard system:
-
+* **Local leaderboard system:**
     * Personal best for each player
     * Local champion (stored in binary file)
-* Clean OOP architecture
+* Clean modular OOP architecture
 
 ---
 
@@ -50,14 +48,15 @@ python main.py
 
 ## Controls
 
-| Key       | Action          |
-|-----------|-----------------|
-| A / D     | Move left/right |
-| Q / E     | Rotate          |
-| S / ↓     | Soft drop       |
-| Space / Z | Hard drop       |
-| C         | Hold piece      |
-| ESC       | Exit game       |
+| Key            | Action            |
+|----------------|-------------------|
+| A / D          | Move left/right   |
+| Q / E          | Rotate            |
+| S / ↓          | Soft drop         |
+| Space / Z      | Hard drop         |
+| C              | Hold piece        |
+| **Mouse Drag** | **Adjust Volume** |
+| ESC            | Exit game         |
 
 ---
 
@@ -105,13 +104,12 @@ Tetris_Realse/
 
 The project follows a modular OOP design:
 
-* `engine.py` — main game loop and logic
-* `board.py` — grid and collision system
-* `piece.py` — tetromino behavior
-* `renderer.py` — rendering and UI
-* `score_manager.py` — local data storage system
-* `config.py` — global constants
-* `config.py` — shared helper functions and color mapping
+* `engine.py` — main game loop, event handling, and core logic
+* `board.py` — grid management and collision system
+* `piece.py` — tetromino behavior and rotation
+* `renderer.py` — GUI rendering and **VolumeSlider UI component**
+* `score_manager.py` — local data storage (CSV for scores, Binary for champion)
+* `config.py` — global constants and color mapping
 
 ---
 
@@ -128,10 +126,9 @@ The project follows a modular OOP design:
 ## Future Improvements
 
 * Online leaderboard
-* ️Settings menu (volume, controls)
-* Difficulty levels
-* More visual effects and animations
-* Mobile version
+* Rebindable controls via config file
+* Progressive difficulty levels (speed increase)
+* Particle effects for line clearing
 
 ---
 
