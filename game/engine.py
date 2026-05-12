@@ -54,6 +54,7 @@ class TetrisPy:
             "OneLine",
             "Rotate",
             "SoftDrop",
+            "LevelUp"
         ]
         for n in names:
             try:
@@ -94,6 +95,7 @@ class TetrisPy:
     def reset_game(self):
         self.board = Board()
         self.score = 0
+        self.fall_delay = 0.7
         self.gameOver = False
         self.hold_piece = None
         self.spawn_piece()
@@ -185,13 +187,25 @@ class TetrisPy:
 
     def lock_and_spawn(self):
         """Locks the current piece onto the board and triggers line clearing."""
+        old_level = self.score // 1000
         self.board.lock_piece(self.current_piece)
         self.play_snd("Drop")
         lines = self.board.clear_lines()
         if lines > 0:
-            self.play_snd("4Lines" if lines == 4 else "OneLine")
             self.score += {1: 100, 2: 300, 3: 700, 4: 1500}.get(lines, 0)
         self.score += 10
+
+        new_level = self.score // 1000
+        if new_level > old_level:
+            self.play_snd("LevelUp")
+        elif lines > 0:
+            self.play_snd("4Lines" if lines == 4 else "OneLine")
+
+        classic_speeds = {
+            0: 0.8, 1: 0.72, 2: 0.63, 3: 0.55, 4: 0.47,
+            5: 0.38, 6: 0.3, 7: 0.22, 8: 0.13, 9: 0.1
+        }
+        self.fall_delay = classic_speeds.get(new_level, 0.1)
         self.spawn_piece()
 
     def run(self):
@@ -232,6 +246,7 @@ class TetrisPy:
                     self.hold_piece,
                     self.global_champ,
                     self.personal_best,
+                    level=self.score // 1000
                 )
                 if self.gameOver:
                     self.renderer.draw_game_over(self.score)

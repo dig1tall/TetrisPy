@@ -127,7 +127,6 @@ The project follows a modular OOP design:
 
 * Online leaderboard
 * Rebindable controls via config file
-* Progressive difficulty levels (speed increase)
 * Particle effects for line clearing
 
 ---

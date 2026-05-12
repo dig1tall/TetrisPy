@@ -154,35 +154,49 @@ class Renderer:
                     get_shape_color(current_piece.type),
                 )
 
-    def draw_ui(self, score, next_fig, hold_fig, global_champ, personal_best):
+    def draw_ui(self, score, next_fig, hold_fig, global_champ, personal_best, level=0):
         uiX = GRID_X + (MAP_WIDTH * TILE_SIZE) + 40
-        self.screen.blit(self.font_sm.render("SCORE", True, (130, 130, 130)), (uiX, 50))
-        self.screen.blit(
-            self.font_md.render(str(score), True, (255, 203, 0)), (uiX, 75)
-        )
-        self._draw_preview_box(uiX, 180, "NEXT", next_fig)
-        self._draw_preview_box(uiX, 350, "HOLD [C]", hold_fig)
 
+        # LEVEL
+        self.screen.blit(self.font_sm.render("LEVEL", True, (130, 130, 130)), (uiX, 50))
+        self.screen.blit(
+            self.font_md.render(str(level), True, (0, 176, 240)), (uiX, 75)
+        )
+
+        # SCORE
+        self.screen.blit(self.font_sm.render("SCORE", True, (130, 130, 130)), (uiX, 125))
+        self.screen.blit(
+            self.font_md.render(str(score), True, (255, 203, 0)), (uiX, 150)
+        )
+
+        # PERSONAL BEST
         self.screen.blit(
             self.font_sm.render("PERSONAL BEST", True, (130, 130, 130)),
-            (uiX, 120),
+            (uiX, 200),
         )
         self.screen.blit(
             self.font_sm.render(str(personal_best), True, (0, 228, 48)),
-            (uiX, 145),
+            (uiX, 225),
         )
 
+        # NEXT
+        self._draw_preview_box(uiX, 270, "NEXT", next_fig)
+
+        # HOLD
+        self._draw_preview_box(uiX, 420, "HOLD [C]", hold_fig)
+
+        # CHAMPION
         self.screen.blit(
             self.font_sm.render("CHAMPION", True, (130, 130, 130)),
-            (uiX, 500),
+            (uiX, 570),
         )
         self.screen.blit(
             self.font_sm.render(global_champ["name"], True, (255, 203, 0)),
-            (uiX, 525),
+            (uiX, 595),
         )
         self.screen.blit(
             self.font_sm.render(str(global_champ["score"]), True, (255, 203, 0)),
-            (uiX, 550),
+            (uiX, 620),
         )
 
     def _draw_preview_box(self, x, y, label, fig):
