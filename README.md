@@ -10,6 +10,7 @@ with a focus on **object-oriented programming, clean architecture, and modular d
 ## Features
 
 * Classic Tetris gameplay with smooth controls and animations
+* **Progressive Difficulty System:** Game speed increases every 1000 points with classic level-up mechanics
 * **Ghost piece** (landing preview) for better precision
 * **Hold piece system** (C key)
 * **Dynamic Audio Control:** Custom volume slider for both background music and SFX
